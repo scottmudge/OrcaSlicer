@@ -1379,7 +1379,8 @@ void TreeSupport::generate_toolpaths()
     const size_t wall_count = object_config.tree_support_wall_count.value;
 
     // Check if set to zero, use default if so.
-    support_extrusion_width = Flow::auto_extrusion_width(FlowRole::frSupportMaterial, (float)nozzle_diameter);
+    if (support_extrusion_width <= 0.0)
+        support_extrusion_width = Flow::auto_extrusion_width(FlowRole::frSupportMaterial, (float)nozzle_diameter);
 
     // coconut: use same intensity settings as SupportMaterial.cpp
     auto m_support_material_interface_flow = support_material_interface_flow(m_object, float(m_slicing_params.layer_height));
