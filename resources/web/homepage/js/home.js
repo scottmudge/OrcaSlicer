@@ -108,7 +108,7 @@ function HandleStudio( pVal )
 	{
 		let nShow=pVal["show"]*1;
 		
-	    if(nShow==1)
+	    if(nShow==1 && false)
 		{
 			$("#NoPluginTip").show();
 			$("#NoPluginTip").css("display","flex");
@@ -116,6 +116,7 @@ function HandleStudio( pVal )
 		else
 		{
 			$("#NoPluginTip").hide();
+			$("#LoginArea").hide();
 		}
 	}
 }

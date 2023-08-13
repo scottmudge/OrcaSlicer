@@ -328,6 +328,12 @@ DPIFrame(NULL, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, BORDERLESS_FRAME_
 #ifndef __APPLE__
             if (this->IsMaximized()) {
                 m_topbar->SetWindowSize();
+                const wxSize& cur_size = this->GetSize();
+                wxPoint cur_pos = this->GetPosition();
+                cur_pos.x = cur_pos.x + 5;
+                cur_pos.y = cur_pos.y + 5;
+                // this->SetSize(cur_size.x + 4, cur_size.y + 2);
+                this->SetPosition(cur_pos);
             } else {
                 m_topbar->SetMaximizedSize();
             }
