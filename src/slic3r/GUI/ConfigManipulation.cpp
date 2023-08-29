@@ -321,37 +321,6 @@ void ConfigManipulation::update_print_fff_config(DynamicPrintConfig* config, con
         is_msg_dlg_already_exist = false;
     }
 
-    //BBS
-    /*
-    if (config->opt_enum<PerimeterGeneratorType>("wall_generator") == PerimeterGeneratorType::Arachne &&
-        config->opt_bool("overhang_speed_classic"))
-    {
-        wxString msg_text = _(L("Arachne engine doesn't work with classic overhang speed mode.\n")) + "\n";
-        if (is_global_config)
-            msg_text += "\n" + _(L("Turn off classic mode automatically? \n"
-                "Yes - Enable arachne with classic mode off\n"
-                "No  - Give up using arachne this time"));
-        MessageDialog dialog(m_msg_dlg_parent, msg_text, "",
-            wxICON_WARNING | (is_global_config ? wxYES | wxNO : wxOK));
-        DynamicPrintConfig new_conf = *config;
-        is_msg_dlg_already_exist = true;
-        auto answer = dialog.ShowModal();
-        bool enable_overhang_slow_down_legacy = false;
-        if (!is_global_config || answer == wxID_YES) {
-            new_conf.set_key_value("overhang_speed_classic", new ConfigOptionBool(false));
-            enable_overhang_slow_down_legacy = true;
-        }
-        else {
-            new_conf.set_key_value("wall_generator", new ConfigOptionEnum<PerimeterGeneratorType>(PerimeterGeneratorType::Classic));
-        }
-        apply(config, &new_conf);
-        if (cb_value_change) {
-            if (!enable_overhang_slow_down_legacy)
-                cb_value_change("overhang_speed_classic", false);
-        }
-        is_msg_dlg_already_exist = false;
-    }
-    */
     // BBS
     int filament_cnt = wxGetApp().preset_bundle->filament_presets.size();
 #if 0
@@ -539,7 +508,7 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     auto gcflavor = preset_bundle->printers.get_edited_preset().config.option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
     
     bool have_perimeters = config->opt_int("wall_loops") > 0;
-    for (auto el : { "ensure_vertical_shell_thickness", "detect_thin_wall", "detect_overhang_wall",
+    for (auto el : { "extra_perimeters_on_overhangs", "ensure_vertical_shell_thickness", "detect_thin_wall", "detect_overhang_wall",
                     "seam_position", "staggered_inner_seams", "wall_infill_order", "outer_wall_line_width",
                     "inner_wall_speed", "outer_wall_speed", "small_perimeter_speed", "small_perimeter_threshold" })
         toggle_field(el, have_perimeters);

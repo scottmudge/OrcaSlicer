@@ -74,6 +74,7 @@ CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(PrinterTechnology)
 
 static t_config_enum_values s_keys_map_PrintHostType {
     { "prusalink",      htPrusaLink },
+    { "prusaconnect",   htPrusaConnect },
     { "octoprint",      htOctoPrint },
     { "duet",           htDuet },
     { "flashair",       htFlashAir },
@@ -778,12 +779,19 @@ void PrintConfigDef::init_fff_params()
     def->tooltip = L("Use only one wall on first layer, to give more space to the bottom infill pattern");
     def->set_default_value(new ConfigOptionBool(false));
 
+    def = this->add("extra_perimeters_on_overhangs", coBool);
+    def->label = L("Extra perimeters on overhangs");
+    def->category = L("Quality");
+    def->tooltip = L("Create additional perimeter paths over steep overhangs and areas where bridges cannot be anchored. ");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("overhang_speed_classic", coBool);
     def->label = L("Classic mode");
     def->category = L("Speed");
     def->tooltip = L("Enable this option to use classic mode");
     def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionBool{ true });
+    def->set_default_value(new ConfigOptionBool{ false });
 
     def = this->add("enable_overhang_speed", coBool);
     def->label = L("Slow down for overhang");
@@ -881,7 +889,7 @@ void PrintConfigDef::init_fff_params()
     def->enum_values.emplace_back("no_brim");
     def->enum_labels.emplace_back(L("Auto"));
     def->enum_labels.emplace_back(L("Mouse ear"));
-    def->enum_labels.emplace_back(L("outer_only"));
+    def->enum_labels.emplace_back(L("Outer brim only"));
     def->enum_labels.emplace_back(L("Inner brim only"));
     def->enum_labels.emplace_back(L("Outer and inner brim"));
     def->enum_labels.emplace_back(L("No-brim"));
@@ -1123,7 +1131,7 @@ void PrintConfigDef::init_fff_params()
     def->enum_keys_map = &ConfigOptionEnum<InfillPattern>::get_enum_values();
     def->enum_values = def_top_fill_pattern->enum_values;
     def->enum_labels = def_top_fill_pattern->enum_labels;
-    def->set_default_value(new ConfigOptionEnum<InfillPattern>(ipRectilinear));
+    def->set_default_value(new ConfigOptionEnum<InfillPattern>(ipMonotonic));
 
 	def                = this->add("internal_solid_infill_pattern", coEnum);
     def->label         = L("Internal solid infill pattern");
@@ -1132,7 +1140,7 @@ void PrintConfigDef::init_fff_params()
     def->enum_keys_map = &ConfigOptionEnum<InfillPattern>::get_enum_values();
     def->enum_values   = def_top_fill_pattern->enum_values;
     def->enum_labels   = def_top_fill_pattern->enum_labels;
-    def->set_default_value(new ConfigOptionEnum<InfillPattern>(ipRectilinear));
+    def->set_default_value(new ConfigOptionEnum<InfillPattern>(ipMonotonic));
     
     def = this->add("outer_wall_line_width", coFloatOrPercent);
     def->label = L("Outer wall");
@@ -1971,7 +1979,7 @@ void PrintConfigDef::init_fff_params()
     //def->enum_values.push_back("repetier");
     //def->enum_values.push_back("teacup");
     //def->enum_values.push_back("makerware");
-    //def->enum_values.push_back("marlin2");
+    def->enum_values.push_back("marlin2");
     //def->enum_values.push_back("sailfish");
     //def->enum_values.push_back("mach3");
     //def->enum_values.push_back("machinekit");
@@ -1984,7 +1992,7 @@ void PrintConfigDef::init_fff_params()
     //def->enum_labels.push_back("Repetier");
     //def->enum_labels.push_back("Teacup");
     //def->enum_labels.push_back("MakerWare (MakerBot)");
-    //def->enum_labels.push_back("Marlin 2");
+    def->enum_labels.push_back("Marlin 2");
     //def->enum_labels.push_back("Sailfish (MakerBot)");
     //def->enum_labels.push_back("Mach3/LinuxCNC");
     //def->enum_labels.push_back("Machinekit");
@@ -2403,6 +2411,7 @@ void PrintConfigDef::init_fff_params()
                    "the kind of the host.");
     def->enum_keys_map = &ConfigOptionEnum<PrintHostType>::get_enum_values();
     def->enum_values.push_back("prusalink");
+    def->enum_values.push_back("prusaconnect");
     def->enum_values.push_back("octoprint");
     def->enum_values.push_back("duet");
     def->enum_values.push_back("flashair");
@@ -2410,6 +2419,7 @@ void PrintConfigDef::init_fff_params()
     def->enum_values.push_back("repetier");
     def->enum_values.push_back("mks");
     def->enum_labels.push_back("PrusaLink");
+    def->enum_labels.push_back("PrusaConnect");
     def->enum_labels.push_back("Octo/Klipper");
     def->enum_labels.push_back("Duet");
     def->enum_labels.push_back("FlashAir");
@@ -4607,7 +4617,7 @@ void PrintConfigDef::handle_legacy(t_config_option_key &opt_key, std::string &va
         "remove_freq_sweep", "remove_bed_leveling", "remove_extrusion_calibration",
         "support_transition_line_width", "support_transition_speed", "bed_temperature", "bed_temperature_initial_layer",
         "can_switch_nozzle_type", "can_add_auxiliary_fan", "extra_flush_volume", "spaghetti_detector", "adaptive_layer_height",
-        "z_hop_type", "z_lift_type"/*, "overhang_speed_classic"*/
+        "z_hop_type", "z_lift_type"
     };
 
     if (ignore.find(opt_key) != ignore.end()) {
