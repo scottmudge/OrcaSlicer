@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 20:42+0800\n"
+"POT-Creation-Date: 2023-08-19 22:08+0800\n"
 "PO-Revision-Date: 2023-07-17 21:51+0200\n"
 "Last-Translator: Momo <renemosner@seznam.cz>\n"
 "Language-Team: \n"
@@ -4895,6 +4895,12 @@ msgstr "Tisková sekvence"
 msgid "Plate name"
 msgstr "Název Podložky"
 
+msgid "Customize"
+msgstr ""
+
+msgid "First Layer print sequence"
+msgstr ""
+
 msgid "Same as Global Bed Type"
 msgstr "Stejné jako globální typ Podložky"
 
@@ -6353,6 +6359,9 @@ msgstr "Horní plocha"
 msgid "Bottom surface"
 msgstr "Spodní plocha"
 
+msgid "Internal Bridge"
+msgstr ""
+
 msgid "Gap infill"
 msgstr "Výplň mezery"
 
@@ -6820,6 +6829,9 @@ msgstr ""
 msgid "Bed types supported by the printer"
 msgstr "Typy podložek podporované tiskárnou"
 
+msgid "First layer print sequence"
+msgstr ""
+
 msgid "This G-code is inserted at every layer change before lifting z"
 msgstr "Tento G-kód se vkládá při každé změně vrstvy před zvednutím z"
 
@@ -7026,6 +7038,9 @@ msgstr ""
 "Toto ovládá generování límce na vnější a/nebo vnitřní straně modelů. Možnost "
 "Auto znamená, že šířka límce je automaticky analyzována a vypočítána."
 
+msgid "Mouse ear"
+msgstr ""
+
 msgid "outer_only"
 msgstr "Pouze vnější"
 
@@ -7043,6 +7058,30 @@ msgid ""
 "easily"
 msgstr ""
 "Mezera mezi nejvnitřnějším límcem a předmětem může usnadnit odstranění límce"
+
+msgid "Brim ears"
+msgstr ""
+
+msgid "Only draw brim over the sharp edges of the model."
+msgstr ""
+
+msgid "Brim ear max angle"
+msgstr ""
+
+msgid ""
+"Maximum angle to let a brim ear appear. \n"
+"If set to 0, no brim will be created. \n"
+"If set to ~180, brim will be created on everything but straight sections."
+msgstr ""
+
+msgid "Brim ear detection radius"
+msgstr ""
+
+msgid ""
+"The geometry will be decimated before dectecting sharp angles. This "
+"parameter indicates the minimum length of the deviation for the decimation.\n"
+"0 to deactivate"
+msgstr ""
 
 msgid "Compatible machine"
 msgstr "Kompatibilní stroj"

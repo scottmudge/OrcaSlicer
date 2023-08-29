@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orca Slicer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 20:42+0800\n"
+"POT-Creation-Date: 2023-08-19 22:08+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n==1) ? 0 : 1;\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 
 msgid "Supports Painting"
 msgstr "Support Painting"
@@ -4851,6 +4851,12 @@ msgstr "Print sequence"
 msgid "Plate name"
 msgstr "Plate name"
 
+msgid "Customize"
+msgstr ""
+
+msgid "First Layer print sequence"
+msgstr ""
+
 msgid "Same as Global Bed Type"
 msgstr "Same as Global Plate Type"
 
@@ -6307,6 +6313,9 @@ msgstr "Top surface"
 msgid "Bottom surface"
 msgstr "Bottom surface"
 
+msgid "Internal Bridge"
+msgstr ""
+
 msgid "Gap infill"
 msgstr "Gap infill"
 
@@ -6775,6 +6784,9 @@ msgstr ""
 msgid "Bed types supported by the printer"
 msgstr "Bed types supported by the printer"
 
+msgid "First layer print sequence"
+msgstr ""
+
 msgid "This G-code is inserted at every layer change before lifting z"
 msgstr "This G-code is inserted at every layer change before lifting z."
 
@@ -6976,8 +6988,11 @@ msgstr ""
 "This controls the generation of the brim at outer and/or inner side of "
 "models. Auto means the brim width is analyzed and calculated automatically."
 
-msgid "outer_only"
+msgid "Mouse ear"
 msgstr ""
+
+msgid "outer_only"
+msgstr "Outer brim only"
 
 msgid "Inner brim only"
 msgstr "Inner brim only"
@@ -6994,6 +7009,30 @@ msgid ""
 msgstr ""
 "This creates a gap between the innermost brim line and the object and can "
 "make the brim easier to remove."
+
+msgid "Brim ears"
+msgstr ""
+
+msgid "Only draw brim over the sharp edges of the model."
+msgstr ""
+
+msgid "Brim ear max angle"
+msgstr ""
+
+msgid ""
+"Maximum angle to let a brim ear appear. \n"
+"If set to 0, no brim will be created. \n"
+"If set to ~180, brim will be created on everything but straight sections."
+msgstr ""
+
+msgid "Brim ear detection radius"
+msgstr ""
+
+msgid ""
+"The geometry will be decimated before dectecting sharp angles. This "
+"parameter indicates the minimum length of the deviation for the decimation.\n"
+"0 to deactivate"
+msgstr ""
 
 msgid "Compatible machine"
 msgstr "Compatible machine"

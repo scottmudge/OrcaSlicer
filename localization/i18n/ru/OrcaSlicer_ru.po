@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OrcaSlicer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 20:42+0800\n"
+"POT-Creation-Date: 2023-08-19 22:08+0800\n"
 "PO-Revision-Date: 2023-08-08 15:05+0300\n"
 "Last-Translator: Ilya <Lizardjazz1@gmail.com>\n"
 "Language-Team: SPb 3D Printing\n"
@@ -4949,6 +4949,12 @@ msgstr "Последовательность печати"
 msgid "Plate name"
 msgstr "Название области"
 
+msgid "Customize"
+msgstr ""
+
+msgid "First Layer print sequence"
+msgstr ""
+
 msgid "Same as Global Bed Type"
 msgstr "То же, что и глобальный тип стола"
 
@@ -6437,6 +6443,9 @@ msgstr "Верхний слой"
 msgid "Bottom surface"
 msgstr "Нижняя поверхность"
 
+msgid "Internal Bridge"
+msgstr ""
+
 msgid "Gap infill"
 msgstr "Заполнение пробелов"
 
@@ -6912,6 +6921,9 @@ msgstr ""
 msgid "Bed types supported by the printer"
 msgstr "Типы столов, поддерживаемые принтером"
 
+msgid "First layer print sequence"
+msgstr ""
+
 msgid "This G-code is inserted at every layer change before lifting z"
 msgstr "Типы столов, поддерживаемые принтером"
 
@@ -7126,6 +7138,9 @@ msgstr ""
 "стороне моделей. Auto означает, что ширина каймы анализируется и "
 "рассчитывается автоматически."
 
+msgid "Mouse ear"
+msgstr ""
+
 msgid "outer_only"
 msgstr "кайма снаружи"
 
@@ -7144,6 +7159,30 @@ msgid ""
 msgstr ""
 "Зазор между внутренней линией каймы и предметом может способствовать более "
 "легкому снятию каймы"
+
+msgid "Brim ears"
+msgstr ""
+
+msgid "Only draw brim over the sharp edges of the model."
+msgstr ""
+
+msgid "Brim ear max angle"
+msgstr ""
+
+msgid ""
+"Maximum angle to let a brim ear appear. \n"
+"If set to 0, no brim will be created. \n"
+"If set to ~180, brim will be created on everything but straight sections."
+msgstr ""
+
+msgid "Brim ear detection radius"
+msgstr ""
+
+msgid ""
+"The geometry will be decimated before dectecting sharp angles. This "
+"parameter indicates the minimum length of the deviation for the decimation.\n"
+"0 to deactivate"
+msgstr ""
 
 msgid "Compatible machine"
 msgstr "Совместимый принтер"
