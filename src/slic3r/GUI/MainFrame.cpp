@@ -325,7 +325,7 @@ DPIFrame(NULL, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, BORDERLESS_FRAME_
     //Bind(wxEVT_MENU, [this](wxCommandEvent&) { m_plater->cut_selection_to_clipboard(); }, wxID_HIGHEST + wxID_CUT);
     Bind(wxEVT_SIZE, [this](wxSizeEvent&) {
             BOOST_LOG_TRIVIAL(trace) << "mainframe: size changed, is maximized = " << this->IsMaximized();
-#ifndef __APPLE__
+#if !defined(__APPLE__) && false
             if (this->IsMaximized()) {
                 m_topbar->SetWindowSize();
                 const wxSize& cur_size = this->GetSize();
