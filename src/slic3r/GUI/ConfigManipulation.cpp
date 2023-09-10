@@ -404,7 +404,7 @@ void ConfigManipulation::update_print_fff_config(DynamicPrintConfig* config, con
         auto   support_type = config->opt_enum<SupportType>("support_type");
         auto   support_style = config->opt_enum<SupportMaterialStyle>("support_style");
         std::set<int> enum_set_normal = {0, 1, 2};
-        std::set<int> enum_set_tree   = {0, 3, 4, 5};
+        std::set<int> enum_set_tree   = {0, 3, 4, 5, 6};
         auto &           set             = is_tree(support_type) ? enum_set_tree : enum_set_normal;
         if (set.find(support_style) == set.end()) {
             DynamicPrintConfig new_conf = *config;
@@ -595,18 +595,22 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     //toggle_field("support_closing_radius", have_support_material && support_style == smsSnug);
 
     bool support_is_tree = config->opt_bool("enable_support") && is_tree(support_type);
-    for (auto el : {"tree_support_branch_angle", "tree_support_wall_count", "tree_support_branch_distance",
-                    "tree_support_branch_diameter", "tree_support_adaptive_layer_height", "tree_support_auto_brim", "tree_support_brim_width"})
-        toggle_field(el, support_is_tree);
-
-    // hide tree support settings when normal is selected
-    for (auto el : {"tree_support_branch_angle", "tree_support_wall_count", "tree_support_branch_distance",
-                    "tree_support_branch_diameter", "max_bridge_length", "tree_support_adaptive_layer_height",  "tree_support_auto_brim", "tree_support_brim_width"})
+    bool support_is_normal_tree = support_is_tree && support_style != smsOrganic;
+    bool support_is_organic = support_is_tree && !support_is_normal_tree;
+    // settings shared by normal and organic trees
+    for (auto el : {"tree_support_branch_angle", "tree_support_branch_distance", "tree_support_branch_diameter" })
         toggle_line(el, support_is_tree);
+    // settings specific to normal trees
+    for (auto el : {"tree_support_wall_count", "tree_support_auto_brim", "tree_support_brim_width", "tree_support_adaptive_layer_height"})
+        toggle_line(el, support_is_normal_tree);
+    // settings specific to organic trees
+    for (auto el : {"tree_support_angle_slow","tree_support_tip_diameter", "tree_support_top_rate", "tree_support_branch_diameter_angle", "tree_support_branch_diameter_double_wall"})
+        toggle_line(el, support_is_organic);
 
     toggle_field("tree_support_brim_width", support_is_tree && !config->opt_bool("tree_support_auto_brim"));
-    // tree support use max_bridge_length instead of bridge_no_support
-    toggle_line("bridge_no_support", !support_is_tree);
+    // non-organic tree support use max_bridge_length instead of bridge_no_support
+    toggle_line("max_bridge_length", support_is_normal_tree);
+    toggle_line("bridge_no_support", !support_is_normal_tree);
 
     for (auto el : { "support_interface_spacing", "support_interface_filament",
                      "support_interface_loop_pattern", "support_bottom_interface_spacing" })
@@ -625,8 +629,10 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     toggle_field("support_filament", have_support_material || have_skirt);
 
     toggle_line("raft_contact_distance", have_raft && !have_support_soluble);
+
+    // Orca: Raft, grid, snug and organic supports use these two parameters to control the size & density of the "brim"/flange
     for (auto el : { "raft_first_layer_expansion", "raft_first_layer_density"})
-        toggle_line(el, have_raft);
+        toggle_field(el, have_support_material && !(support_is_normal_tree && !have_raft));
 
     bool has_ironing = (config->opt_enum<IroningType>("ironing_type") != IroningType::NoIroning);
     for (auto el : { "ironing_flow", "ironing_spacing", "ironing_speed" })
@@ -639,9 +645,22 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     bool have_ooze_prevention = config->opt_bool("ooze_prevention");
     toggle_field("standby_temperature_delta", have_ooze_prevention);
 
+    // Orca todo: enable/disable wipe tower parameters
+    // for (auto el :
+    //      {"wipe_tower_x", "wipe_tower_y", , "wipe_tower_rotation_angle", "wipe_tower_brim_width", "wipe_tower_cone_angle",
+    //       "wipe_tower_extra_spacing", "wipe_tower_bridging", "wipe_tower_no_sparse_layers", "single_extruder_multi_material_priming"})
+    //     toggle_field(el, have_wipe_tower);
+
     bool have_prime_tower = config->opt_bool("enable_prime_tower");
-    for (auto el : { "prime_tower_width", "prime_volume", "prime_tower_brim_width"})
+    for (auto el : { "prime_tower_width", "prime_tower_brim_width"})
         toggle_line(el, have_prime_tower);
+
+    bool purge_in_primetower = preset_bundle->printers.get_edited_preset().config.opt_bool("purge_in_prime_tower");
+
+    for (auto el : {"wipe_tower_rotation_angle", "wipe_tower_cone_angle", "wipe_tower_extra_spacing", "wipe_tower_bridging", "wipe_tower_no_sparse_layers"})
+        toggle_line(el, have_prime_tower && purge_in_primetower);
+
+    toggle_line("prime_volume",have_prime_tower && !purge_in_primetower);
 
     for (auto el : {"flush_into_infill", "flush_into_support", "flush_into_objects"})
         toggle_field(el, have_prime_tower);
@@ -666,7 +685,7 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
 
     bool have_arachne = config->opt_enum<PerimeterGeneratorType>("wall_generator") == PerimeterGeneratorType::Arachne;
     for (auto el : { "wall_transition_length", "wall_transition_filter_deviation", "wall_transition_angle",
-        "min_feature_size", "min_bead_width", "wall_distribution_count" })
+                    "min_feature_size", "min_bead_width", "wall_distribution_count", "initial_layer_min_bead_width"})
         toggle_line(el, have_arachne);
     toggle_field("detect_thin_wall", !have_arachne);
     
@@ -686,7 +705,6 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     toggle_line("exclude_object", gcflavor == gcfKlipper);
 
     toggle_line("min_width_top_surface",config->opt_bool("only_one_wall_top"));
-
 }
 
 void ConfigManipulation::update_print_sla_config(DynamicPrintConfig* config, const bool is_global_config/* = false*/)
