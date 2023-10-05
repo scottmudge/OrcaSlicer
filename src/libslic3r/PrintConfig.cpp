@@ -2335,6 +2335,7 @@ def = this->add("filament_loading_speed", coFloats);
 
     def                = this->add("ironing_pattern", coEnum);
     def->label         = L("Ironing Pattern");
+    def->tooltip       = L("The pattern that will be used when ironing");
     def->category      = L("Quality");
     def->enum_keys_map = &ConfigOptionEnum<InfillPattern>::get_enum_values();
     def->enum_values.push_back("concentric");
@@ -2374,6 +2375,16 @@ def = this->add("filament_loading_speed", coFloats);
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(20));
+
+    def           = this->add("ironing_angle", coFloat);
+    def->label    = L("Ironing angle");
+    def->category = L("Quality");
+    def->tooltip  = L("The angle ironing is done at. A negative number disables this function and uses the default method.");
+    def->sidetext = L("°");
+    def->min      = -1;
+    def->max      = 359;
+    def->mode     = comAdvanced;
+    def->set_default_value(new ConfigOptionFloat(-1));
 
     def = this->add("layer_change_gcode", coString);
     def->label = L("Layer change G-code");
