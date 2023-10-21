@@ -225,6 +225,13 @@ enum NozzleType {
     ntCount
 };
 
+static std::unordered_map<NozzleType, std::string>NozzleTypeEumnToStr = {
+    {NozzleType::ntUndefine,        "undefine"},
+    {NozzleType::ntHardenedSteel,   "hardened_steel"},
+    {NozzleType::ntStainlessSteel,  "stainless_steel"},
+    {NozzleType::ntBrass,           "brass"}
+};
+
 // BBS
 enum PrinterStructure {
     psUndefine=0,
@@ -848,6 +855,8 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionBool,                 hole_to_polyhole))
     ((ConfigOptionFloatOrPercent,       hole_to_polyhole_threshold))
     ((ConfigOptionBool,                 hole_to_polyhole_twisted))
+    ((ConfigOptionBool,                 overhang_reverse))
+    ((ConfigOptionFloatOrPercent,       overhang_reverse_threshold))
 )
 
 PRINT_CONFIG_CLASS_DEFINE(
