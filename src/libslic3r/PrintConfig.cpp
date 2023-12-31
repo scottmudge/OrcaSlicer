@@ -4554,6 +4554,13 @@ def = this->add("filament_loading_speed", coFloats);
     def->max = 25.0;
     def->set_default_value(new ConfigOptionFloat(0.5));
 
+    def = this->add("disable_min_length_top_bottom", coBool);
+    def->label = L("Disable Short Wall Cleaning Top/Bottom Layers");
+    def->category = L("Quality");
+    def->tooltip = L("Disable minimum wall length cleaning on topmost and bottommost layers.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
+
     def = this->add("initial_layer_min_bead_width", coPercent);
     def->label = L("First layer minimum wall width");
     def->category = L("Quality");

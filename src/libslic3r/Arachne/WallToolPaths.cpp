@@ -36,6 +36,8 @@ WallToolPathsParams make_paths_params(const int layer_id, const PrintObjectConfi
         else
             input_params.min_length_factor = 0.5f;
 
+        input_params.disable_min_length_top_bottom = print_object_config.disable_min_length_top_bottom;
+
         if (layer_id == 0) {
             if (const auto &initial_layer_min_bead_width_opt = print_object_config.initial_layer_min_bead_width)
                 input_params.min_bead_width = initial_layer_min_bead_width_opt.value * 0.01 * min_nozzle_diameter;
@@ -679,7 +681,7 @@ void WallToolPaths::removeSmallLines(std::vector<VariableWidthLines> &toolpaths)
             for (const ExtrusionJunction &j : line)
                 min_width = std::min(min_width, j.w);
             // Only use min_length_factor for non-topmost, to prevent top gaps. Otherwise use default value.
-            if (line.is_odd && !line.is_closed && shorterThan(line, m_params.is_top_or_bottom_layer ? (min_width / 2) : (min_width * m_params.min_length_factor))) { // remove line
+            if (line.is_odd && !line.is_closed && shorterThan(line, (m_params.is_top_or_bottom_layer && m_params.disable_min_length_top_bottom) ? (min_width / 2) : (min_width * m_params.min_length_factor))) { // remove line
                 line = std::move(inset.back());
                 inset.erase(--inset.end());
                 line_idx--; // reconsider the current position

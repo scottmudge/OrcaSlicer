@@ -786,6 +786,7 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloat,              tree_support_branch_diameter_organic))
     ((ConfigOptionFloat,              tree_support_branch_angle_organic))
     ((ConfigOptionFloat,              min_length_factor))
+    ((ConfigOptionBool,               disable_min_length_top_bottom))
 
     // Move all acceleration and jerk settings to object
     ((ConfigOptionFloat,              default_acceleration))
