@@ -34,8 +34,8 @@
 #include "TopExp_Explorer.hxx"
 #include "BRep_Tool.hxx"
 
-const double STEP_TRANS_CHORD_ERROR = 0.0015;
-const double STEP_TRANS_ANGLE_RES = 0.2;
+const double STEP_TRANS_CHORD_ERROR = 0.0022;
+const double STEP_TRANS_ANGLE_RES = 0.25;
 
 
 namespace Slic3r {
