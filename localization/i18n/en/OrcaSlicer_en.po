@@ -9228,6 +9228,9 @@ msgstr ""
 msgid "Inner/Outer/Inner"
 msgstr ""
 
+msgid "Outer/Outer/Inner"
+msgstr ""
+
 msgid "Print infill first"
 msgstr ""
 
