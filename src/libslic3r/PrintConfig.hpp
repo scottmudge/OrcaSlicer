@@ -811,6 +811,7 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionEnum<GapFillTarget>,gap_fill_target))
     ((ConfigOptionFloat,              min_length_factor))
     ((ConfigOptionBool,               disable_min_length_top_bottom))
+    ((ConfigOptionFloat,              min_fill_path_length))
 
     // Move all acceleration and jerk settings to object
     ((ConfigOptionFloat,              default_acceleration))
