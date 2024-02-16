@@ -7,6 +7,8 @@
 #include <shellapi.h>
 #include <wchar.h>
 
+#define FORCE_CONSOLE false
+
 
 
 #ifdef SLIC3R_GUI
@@ -32,7 +34,37 @@ extern "C"
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-#include <stdio.h>
+#if (FORCE_CONSOLE == true)
+#include <fcntl.h>
+#include <io.h>
+#include <fstream>
+#include <iostream>
+class outbuf : public std::streambuf {
+public:
+    outbuf() {
+        setp(0, 0);
+    }
+
+    virtual int_type overflow(int_type c = traits_type::eof()) {
+        return fputc(c, stdout) == EOF ? traits_type::eof() : c;
+    }
+};
+
+void RedirectIOToConsole()
+{
+    if (AllocConsole()) {
+        FILE* pCout;
+        freopen_s(&pCout, "CONOUT$", "w", stdout);
+        SetConsoleTitle(L"Debug Console");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
+    }
+
+    // set std::cout to use my custom streambuf
+    outbuf ob;
+    std::streambuf *sb = std::cout.rdbuf(&ob);
+}
+
+#endif
 
 #ifdef SLIC3R_GUI
 class OpenGLVersionCheck
@@ -304,6 +336,11 @@ int wmain(int argc, wchar_t **argv)
         printf("could not locate the function orcaslicer_main in OrcaSlicer.dll\n");
         return -1;
     }
+    
+#if (FORCE_CONSOLE == true)
+    RedirectIOToConsole();
+#endif
+
     // argc minus the trailing nullptr of the argv
     return orcaslicer_main((int)argv_extended.size() - 1, argv_extended.data());
 }

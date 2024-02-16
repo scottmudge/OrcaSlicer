@@ -1,3 +1,9 @@
+// Disable warning in MSVC
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4804)
+#endif
+
 // dear imgui, v1.83
 // (widgets code)
 
@@ -9314,3 +9320,8 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
 
 
 #endif // #ifndef IMGUI_DISABLE
+
+// Disable warning in MSVC
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
