@@ -3566,14 +3566,14 @@ def = this->add("filament_loading_speed", coFloats);
     def->set_default_value(new ConfigOptionFloat(15));
 
     def = this->add("min_fill_path_length", coFloat);
-    def->label = L("Minimum fill path length");
+    def->label = L("Minimum solid infill path length");
     def->category = L("Strength");
-    def->tooltip = L("Areas of infill with extrusion lengths shorter than this value are removed in order to prevent small extrusions "
-        "which may unnecessarily increase the total print time. Set to 0 to disable.");
+    def->tooltip = L("Areas of solid infill with extrusion lengths shorter than this value are removed in order to prevent small extrusions "
+        "which may unnecessarily increase the total print time or lead to undesirable print artifacts. Set to 0 to disable.");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionFloat(2.0f));
+    def->set_default_value(new ConfigOptionFloat(1.0f));
 
     def = this->add("solid_infill_filament", coInt);
     //def->label = L("Solid infill");
