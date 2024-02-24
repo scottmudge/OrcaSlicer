@@ -99,6 +99,16 @@ enum class WallSequence {
     OuterOuterInner,
     Count,
 };
+
+// Orca
+enum class WallDirection
+{
+    Auto,
+    CounterClockwise,
+    Clockwise,
+    Count,
+};
+
 //BBS
 enum class PrintSequence {
     ByLayer,
@@ -158,6 +168,13 @@ inline bool is_auto(SupportType stype)
 
 enum SeamPosition {
     spNearest, spAligned, spRear, spRandom
+};
+
+// Orca
+enum class SeamScarfType {
+    None,
+    External,
+    All,
 };
 
 //Orca
@@ -373,6 +390,7 @@ CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SupportMaterialInterfacePattern)
 // BBS
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SupportType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SeamPosition)
+CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SeamScarfType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SLADisplayOrientation)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(SLAPillarConnectionMode)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(BrimType)
@@ -934,9 +952,10 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionEnum<WallSequence>,  wall_sequence))
     ((ConfigOptionBool,                is_infill_first))
     ((ConfigOptionBool,                small_area_infill_flow_compensation))
+    ((ConfigOptionEnum<WallDirection>,  wall_direction))
 
     // Orca: seam slopes
-    ((ConfigOptionBool,                 seam_slope_enabled))
+    ((ConfigOptionEnum<SeamScarfType>,  seam_slope_type))
     ((ConfigOptionFloatOrPercent,       seam_slope_start_height))
     ((ConfigOptionBool,                 seam_slope_entire_loop))
     ((ConfigOptionFloat,                seam_slope_min_length))

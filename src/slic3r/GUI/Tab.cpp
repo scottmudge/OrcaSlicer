@@ -1551,6 +1551,24 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         }
     }
 
+    if(opt_key == "make_overhang_printable"){
+        if(m_config->opt_bool("make_overhang_printable")){
+            wxString msg_text = _(
+                L("Enabling this option will modify the model's shape. If your print requires precise dimensions or is part of an "
+                  "assembly, it's important to double-check whether this change in geometry impacts the functionality of your print."));
+            msg_text += "\n\n" + _(L("Are you sure you want to enable this option?"));
+            MessageDialog dialog(wxGetApp().plater(), msg_text, "", wxICON_WARNING | wxYES | wxNO);
+            dialog.SetButtonLabel(wxID_YES, _L("Enable"));
+            dialog.SetButtonLabel(wxID_NO, _L("Cancel"));
+            if (dialog.ShowModal() == wxID_NO) {
+                DynamicPrintConfig new_conf = *m_config;
+                new_conf.set_key_value("make_overhang_printable", new ConfigOptionBool(false));
+                m_config_manipulation.apply(m_config, &new_conf);
+                wxGetApp().plater()->update();
+            }
+        }
+    }
+    
     if(opt_key=="layer_height"){
         auto min_layer_height_from_nozzle=wxGetApp().preset_bundle->full_config().option<ConfigOptionFloats>("min_layer_height")->values;
         auto max_layer_height_from_nozzle=wxGetApp().preset_bundle->full_config().option<ConfigOptionFloats>("max_layer_height")->values;
@@ -1590,12 +1608,12 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         }
     }
 
-    if (opt_key == "seam_slope_enabled") {
+    if (opt_key == "seam_slope_type") {
         auto bad_seam_position = m_config->opt_enum<SeamPosition>("seam_position") == spRandom ||
                                  m_config->opt_enum<SeamPosition>("seam_position") == spNearest;
         auto too_fast_outer_wall = m_config->opt_float("outer_wall_speed") > 50.;
 
-        if (boost::any_cast<bool>(value) && (m_config->opt_enum<WallSequence>("wall_sequence") != WallSequence::OuterInner ||
+        if (boost::any_cast<int>(value) != (int)SeamScarfType::None && (m_config->opt_enum<WallSequence>("wall_sequence") != WallSequence::OuterInner ||
                                              m_config->opt_bool("wipe_before_external_loop") || bad_seam_position || too_fast_outer_wall)) {
             wxString msg_text = _L("When using scarf joint, we recommend the following settings:\n"
                                    "print outer wall first, disable wipe before external loop, reduce outer wall speed to no greater than "
@@ -1988,7 +2006,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("seam_position", "seam");
         optgroup->append_single_option_line("staggered_inner_seams", "seam");
         optgroup->append_single_option_line("seam_gap","seam");
-        optgroup->append_single_option_line("seam_slope_enabled");
+        optgroup->append_single_option_line("seam_slope_type");
         optgroup->append_single_option_line("seam_slope_start_height");
         optgroup->append_single_option_line("seam_slope_entire_loop");
         optgroup->append_single_option_line("seam_slope_min_length");
@@ -2036,6 +2054,7 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Walls and surfaces"), L"param_advanced");
         optgroup->append_single_option_line("wall_sequence");
         optgroup->append_single_option_line("is_infill_first");
+        optgroup->append_single_option_line("wall_direction");
         optgroup->append_single_option_line("print_flow_ratio");
         optgroup->append_single_option_line("top_solid_infill_flow_ratio");
         optgroup->append_single_option_line("bottom_solid_infill_flow_ratio");
