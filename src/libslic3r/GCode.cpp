@@ -399,7 +399,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
                 if (gcodegen.enable_cooling_markers() && !is_last)
                     cooling_mark = /*gcodegen.config().role_based_wipe_speed ? ";_EXTERNAL_PERIMETER" : */";_WIPE";
 
-                gcode += gcodegen.writer().set_speed(_wipe_speed * 60, "", cooling_mark);
+                gcode += gcodegen.writer().set_speed(_wipe_speed * 60, "", cooling_mark, true);
                 for (const Line& line : wipe_path.lines()) {
                     double segment_length = line.length();
                     double dE = length * (segment_length / wipe_dist);
@@ -5095,14 +5095,26 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
 {
     std::string gcode;
 
+    if (path.role() == erSolidInfill && m_config.min_fill_path_length.value > 0) {
+        if (unscale_(path.length()) < m_config.min_fill_path_length.value) {
+            return gcode;
+        }
+    }
+
     if (is_bridge(path.role()))
         description += " (bridge)";
+
+    double speed_factor_override = -1.0;
+    if (is_support(path.role())) {
+        speed_factor_override = double(m_config.global_speed_factor_supports.value) * 0.01;
+    }
 
     const ExtrusionPathSloped* sloped = dynamic_cast<const ExtrusionPathSloped*>(&path);
 
     const auto get_sloped_z = [&sloped, this](double z_ratio) {
         const auto height = sloped->height;
-        return lerp(m_nominal_z - height, m_nominal_z, z_ratio);
+        const auto z_offset = sloped->z_offset;
+        return lerp(m_nominal_z + z_offset * height - height, m_nominal_z + z_offset * height, z_ratio);
     };
 
     // go to first point of extrusion path
@@ -5113,7 +5125,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             path.first_point(),
             path.role(),
             "move to first " + description + " point",
-            sloped == nullptr ? DBL_MAX : get_sloped_z(sloped->slope_begin.z_ratio)
+            sloped == nullptr ? m_nominal_z + path.z_offset * path.height : get_sloped_z(sloped->slope_begin.z_ratio)
         );
         m_need_change_layer_lift_z = false;
     }
@@ -5183,7 +5195,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
     }
 
     // calculate extrusion length per distance unit
-    auto _mm3_per_mm = path.mm3_per_mm * this->config().print_flow_ratio;
+    auto _mm3_per_mm = path.mm3_per_mm * path.extrusion_multiplier * this->config().print_flow_ratio;
     if (path.role() == erTopSolidInfill)
         _mm3_per_mm *= m_config.top_solid_infill_flow_ratio;
     else if (path.role() == erBottomSurface)
@@ -5574,7 +5586,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             // ORCA: End of adaptive PA code segment
         }
         
-        gcode += m_writer.set_speed(F, "", comment);
+        gcode += m_writer.set_speed(F, "", comment, speed_factor_override);
         {
             if (m_enable_cooling_markers) {
                 if (enable_overhang_bridge_fan) {
@@ -5734,7 +5746,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             Polyline l(p);
             total_length = l.length() * SCALING_FACTOR;
         }
-        gcode += m_writer.set_speed(last_set_speed, "", comment);
+        gcode += m_writer.set_speed(last_set_speed, "", comment, speed_factor_override);
         Vec2d prev = this->point_to_gcode_quantized(new_points[0].p);
         bool pre_fan_enabled = false;
         bool cur_fan_enabled = false;
@@ -5845,10 +5857,10 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             // Ignore small speed variations - emit speed change if the delta between current and new is greater than 60mm/min / 1mm/sec
             // Reset speed to F if delta to F is less than 1mm/sec
             if ((std::abs(last_set_speed - new_speed) > 60)) {
-                gcode += m_writer.set_speed(new_speed, "", comment);
+                gcode += m_writer.set_speed(new_speed, "", comment, speed_factor_override);
                 last_set_speed = new_speed;
             } else if ((std::abs(F - new_speed) <= 60)) {
-                gcode += m_writer.set_speed(F, "", comment);
+                gcode += m_writer.set_speed(F, "", comment, speed_factor_override);
                 last_set_speed = F;
             }
             auto dE = e_per_mm * line_length;

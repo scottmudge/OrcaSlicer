@@ -20,7 +20,7 @@ public:
         multiple_extruders(false), m_extruder(nullptr),
         m_single_extruder_multi_material(false),
         m_last_acceleration(0), m_max_acceleration(0),m_last_travel_acceleration(0), m_max_travel_acceleration(0),
-        m_last_jerk(0), m_max_jerk_x(0), m_max_jerk_y(0),
+        m_last_jerk(0), m_max_jerk_x(0), m_max_jerk_y(0), m_global_speed_factor(1.0), m_apply_global_speed_factor_to_travel(false),
         m_last_bed_temperature(0), m_last_bed_temperature_reached(true),
         m_lifted(0),
         m_to_lift(0),
@@ -65,7 +65,7 @@ public:
     // printed with the same extruder.
     std::string toolchange_prefix() const;
     std::string toolchange(unsigned int extruder_id);
-    std::string set_speed(double F, const std::string &comment = std::string(), const std::string &cooling_marker = std::string());
+    std::string set_speed(double F, const std::string &comment = std::string(), const std::string &cooling_marker = std::string(), const double speed_factor_override = -1.0);
     // SoftFever NOTE: the returned speed is mm/minute
     double      get_current_speed() const { return m_current_speed;}
     std::string travel_to_xy(const Vec2d &point, const std::string &comment = std::string());
@@ -136,6 +136,8 @@ public:
     double          m_last_jerk;
     double          m_max_jerk_z;
     double          m_max_jerk_e;
+    double          m_global_speed_factor;
+    bool            m_apply_global_speed_factor_to_travel;
 
     unsigned int  m_travel_acceleration;
     unsigned int  m_travel_jerk;

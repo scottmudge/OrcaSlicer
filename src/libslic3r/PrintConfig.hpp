@@ -87,6 +87,7 @@ enum class WallSequence {
     InnerOuter,
     OuterInner,
     InnerOuterInner,
+    OuterOuterInner,
     Count,
 };
 
@@ -879,6 +880,8 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloat,              tree_support_branch_angle_organic))
     ((ConfigOptionEnum<GapFillTarget>,gap_fill_target))
     ((ConfigOptionFloat,              min_length_factor))
+    ((ConfigOptionBool,               disable_min_length_top_bottom))
+    ((ConfigOptionFloat,              min_fill_path_length))
 
     // Move all acceleration and jerk settings to object
     ((ConfigOptionFloat,              default_acceleration))
@@ -975,6 +978,8 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloat, internal_solid_infill_speed))
     // Detect thin walls.
     ((ConfigOptionBool, detect_thin_wall))
+    //staggered layer checking
+    ((ConfigOptionBool,               staggered_perimeters))
     ((ConfigOptionFloatOrPercent, top_surface_line_width))
     ((ConfigOptionInt, top_shell_layers))
     ((ConfigOptionFloat, top_shell_thickness))
@@ -1201,6 +1206,11 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionStrings,              small_area_infill_flow_compensation_model))
 
     ((ConfigOptionBool,                has_scarf_joint_seam))
+    
+    // Mudge: Global speed factor
+    ((ConfigOptionPercent,             global_speed_factor))
+    ((ConfigOptionPercent,             global_speed_factor_supports))
+    ((ConfigOptionBool,                global_speed_factor_apply_to_travel))
 )
 
 // This object is mapped to Perl as Slic3r::Config::Print.
@@ -1360,8 +1370,6 @@ PRINT_CONFIG_CLASS_DERIVED_DEFINE(
     ((ConfigOptionPoint,               bed_mesh_max))
     ((ConfigOptionPoint,               bed_mesh_probe_distance))
     ((ConfigOptionFloat,               adaptive_bed_mesh_margin))
-
-
 )
 
 // This object is mapped to Perl as Slic3r::Config::Full.

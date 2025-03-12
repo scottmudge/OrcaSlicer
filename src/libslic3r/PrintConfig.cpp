@@ -182,8 +182,8 @@ CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallInfillOrder)
 static t_config_enum_values s_keys_map_WallSequence {
     { "inner wall/outer wall",     int(WallSequence::InnerOuter) },
     { "outer wall/inner wall",     int(WallSequence::OuterInner) },
-    { "inner-outer-inner wall",    int(WallSequence::InnerOuterInner)}
-
+    { "inner-outer-inner wall",    int(WallSequence::InnerOuterInner) },
+    { "outer-outer-inner wall",    int(WallSequence::OuterOuterInner) }
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallSequence)
 
@@ -1066,7 +1066,7 @@ void PrintConfigDef::init_fff_params()
 
     // the tooltip is copied from SuperStudio
     def = this->add("min_width_top_surface", coFloatOrPercent);
-    def->label = L("One wall threshold");
+    def->label = L("Top-surface threshold");
     def->category = L("Quality");
     // xgettext:no-c-format, no-boost-format
     def->tooltip = L("If a top surface has to be printed and it's partially covered by another layer, it won't be considered at a top layer where its width is below this value."
@@ -1680,9 +1680,11 @@ void PrintConfigDef::init_fff_params()
     def->enum_values.push_back("inner wall/outer wall");
     def->enum_values.push_back("outer wall/inner wall");
     def->enum_values.push_back("inner-outer-inner wall");
+    def->enum_values.push_back("outer-outer-inner wall");
     def->enum_labels.push_back(L("Inner/Outer"));
     def->enum_labels.push_back(L("Outer/Inner"));
     def->enum_labels.push_back(L("Inner/Outer/Inner"));
+    def->enum_labels.push_back(L("Outer/Outer/Inner"));
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionEnum<WallSequence>(WallSequence::InnerOuter));
 
@@ -2660,6 +2662,38 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionInt(0));
+
+    // Mudge
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def = this->add("global_speed_factor", coPercent);
+    def->label = L("Global Speed Factor");
+    def->tooltip = L("Multiply speed of all moves, extrusions, and actions by this amount. If you wish to also affect "
+                     "the speed of travel, enable the option below this.");
+    def->category = L("Speed");
+    def->sidetext = L("%");
+    def->min = 1;
+    def->max = 500;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionPercent(100));
+
+    def = this->add("global_speed_factor_supports", coPercent);
+    def->label = L("Supports Speed Factor");
+    def->tooltip = L("Multiply speed of all support moves, extrusions, and actions by this amount. If you wish to also affect "
+                     "the speed of travel, enable the option below this.");
+    def->category = L("Speed");
+    def->sidetext = L("%");
+    def->min = 1;
+    def->max = 500;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionPercent(100));
+
+    def = this->add("global_speed_factor_apply_to_travel", coBool);
+    def->label = L("Apply to travel");
+    def->category = L("Speed");
+    def->tooltip = L("Whether to apply the global speed factor to travel moves or not.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(0));
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def = this->add("nozzle_temperature_initial_layer", coInts);
     def->label = L("Initial layer");
@@ -4364,6 +4398,16 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(15));
 
+    def = this->add("min_fill_path_length", coFloat);
+    def->label = L("Minimum solid infill path length");
+    def->category = L("Strength");
+    def->tooltip = L("Areas of solid infill with extrusion lengths shorter than this value are removed in order to prevent small extrusions "
+        "which may unnecessarily increase the total print time or lead to undesirable print artifacts. Set to 0 to disable.");
+    def->sidetext = L("mm");
+    def->min = 0;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionFloat(1.0f));
+
     def = this->add("solid_infill_filament", coInt);
     def->gui_type = ConfigOptionDef::GUIType::i_enum_open;
     def->label = L("Solid infill");
@@ -5143,6 +5187,13 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
 
+    def          = this->add("staggered_perimeters", coBool);
+    def->label   = L("Stagger perimeters");
+    def->category = L("Strength");
+    def->tooltip = L("This is an experminetal feature that allows you to print staggered perimeters for better layer adhesion and strength.");
+    def->mode    = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("change_filament_gcode", coString);
     def->label = L("Change filament G-code");
     def->tooltip = L("This gcode is inserted when change filament, including T command to trigger tool change");
@@ -5587,6 +5638,13 @@ void PrintConfigDef::init_fff_params()
     def->min = 0.0;
     def->max = 25.0;
     def->set_default_value(new ConfigOptionFloat(0.5));
+
+    def = this->add("disable_min_length_top_bottom", coBool);
+    def->label = L("Disable Short Wall Cleaning Top/Bottom Layers");
+    def->category = L("Quality");
+    def->tooltip = L("Disable minimum wall length cleaning on topmost and bottommost layers.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("initial_layer_min_bead_width", coPercent);
     def->label = L("First layer minimum wall width");

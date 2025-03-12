@@ -40,6 +40,9 @@ void GCodeWriter::apply_print_config(const PrintConfig &print_config)
     };
     m_max_jerk_z = print_config.machine_max_jerk_z.values.front();
     m_max_jerk_e = print_config.machine_max_jerk_e.values.front();
+
+    m_global_speed_factor = (float(config.global_speed_factor.value) * 0.01f);
+    m_apply_global_speed_factor_to_travel = config.global_speed_factor_apply_to_travel.value;
 }
 
 void GCodeWriter::set_extruders(std::vector<unsigned int> extruder_ids)
@@ -407,14 +410,14 @@ std::string GCodeWriter::toolchange(unsigned int extruder_id)
     return gcode.str();
 }
 
-std::string GCodeWriter::set_speed(double F, const std::string &comment, const std::string &cooling_marker)
+std::string GCodeWriter::set_speed(double F, const std::string &comment, const std::string &cooling_marker, const double speed_factor_override)
 {
     assert(F > 0.);
     assert(F < 100000.);
     
     m_current_speed = F;
     GCodeG1Formatter w;
-    w.emit_f(F);
+    w.emit_f(F * (speed_factor_override > 0.0 ? speed_factor_override : m_global_speed_factor));
     //BBS
     w.emit_comment(GCodeWriter::full_gcode_comment, comment);
     w.emit_string(cooling_marker);
@@ -434,7 +437,7 @@ std::string GCodeWriter::travel_to_xy(const Vec2d &point, const std::string &com
     w.emit_xy(point_on_plate);
     auto speed = m_is_first_layer
         ? this->config.get_abs_value("initial_layer_travel_speed") : this->config.travel_speed.value;
-    w.emit_f(speed * 60.0);
+    w.emit_f(speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
     //BBS
     w.emit_comment(GCodeWriter::full_gcode_comment, comment);
     return w.string();
@@ -496,7 +499,7 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, const std::string &co
                 Vec3d slope_top_point = Vec3d(temp(0), temp(1), delta(2)) + source;
                 GCodeG1Formatter w0;
                 w0.emit_xyz(slope_top_point);
-                w0.emit_f(travel_speed * 60.0);
+                w0.emit_f(travel_speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
                 //BBS
                 w0.emit_comment(GCodeWriter::full_gcode_comment, comment);
                 slop_move = w0.string();
@@ -511,13 +514,13 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, const std::string &co
             GCodeG1Formatter w0;
             if (this->is_current_position_clear()) {
                 w0.emit_xyz(target);
-                w0.emit_f(travel_speed * 60.0);
+                w0.emit_f(travel_speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
                 w0.emit_comment(GCodeWriter::full_gcode_comment, comment);
                 xy_z_move = w0.string();
             }
             else {
                 w0.emit_xy(Vec2d(target.x(), target.y()));
-                w0.emit_f(travel_speed * 60.0);
+                w0.emit_f(travel_speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
                 w0.emit_comment(GCodeWriter::full_gcode_comment, comment);
                 xy_z_move = w0.string() + _travel_to_z(target.z(), comment);
             }
@@ -551,13 +554,13 @@ std::string GCodeWriter::travel_to_xyz(const Vec3d &point, const std::string &co
     {
         //force to move xy first then z after filament change
         w.emit_xy(Vec2d(point_on_plate.x(), point_on_plate.y()));
-        w.emit_f(this->config.travel_speed.value * 60.0);
+        w.emit_f(this->config.travel_speed.value * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
         w.emit_comment(GCodeWriter::full_gcode_comment, comment);
         out_string = w.string() + _travel_to_z(point_on_plate.z(), comment);
     } else {
         GCodeG1Formatter w;
         w.emit_xyz(point_on_plate);
-        w.emit_f(this->config.travel_speed.value * 60.0);
+        w.emit_f(this->config.travel_speed.value * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
         w.emit_comment(GCodeWriter::full_gcode_comment, comment);
         out_string = w.string();
     }
@@ -598,7 +601,7 @@ std::string GCodeWriter::_travel_to_z(double z, const std::string &comment)
     
     GCodeG1Formatter w;
     w.emit_z(z);
-    w.emit_f(speed * 60.0);
+    w.emit_f(speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
     //BBS
     w.emit_comment(GCodeWriter::full_gcode_comment, comment);
     return w.string();
@@ -619,7 +622,7 @@ std::string GCodeWriter::_spiral_travel_to_z(double z, const Vec2d &ij_offset, c
     w.emit_z(z);
     w.emit_ij(ij_offset);
     w.emit_string(" P1 ");
-    w.emit_f(speed * 60.0);
+    w.emit_f(speed * 60.0 * (m_apply_global_speed_factor_to_travel ? m_global_speed_factor : 1.0));
     w.emit_comment(GCodeWriter::full_gcode_comment, comment);
     return output + w.string();
 }

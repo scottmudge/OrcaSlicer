@@ -102,6 +102,12 @@ inline bool is_bridge(ExtrusionRole role) {
         || role == erOverhangPerimeter;
 }
 
+inline bool is_support(ExtrusionRole role) {
+    return role == erSupportMaterial
+        || role == erSupportMaterialInterface
+        || role == erSupportTransition;
+}
+
 class ExtrusionEntity
 {
 public:
@@ -160,10 +166,14 @@ public:
     // Height of the extrusion, used for visualization purposes.
     float height;
 
-    ExtrusionPath() : mm3_per_mm(-1), width(-1), height(-1), m_role(erNone), m_no_extrusion(false) {}
-    ExtrusionPath(ExtrusionRole role) : mm3_per_mm(-1), width(-1), height(-1), m_role(role), m_no_extrusion(false) {}
-    ExtrusionPath(ExtrusionRole role, double mm3_per_mm, float width, float height, bool no_extrusion = false) : mm3_per_mm(mm3_per_mm), width(width), height(height), m_role(role), m_no_extrusion(no_extrusion) {}
-    ExtrusionPath(double overhang_degree, int curve_degree, ExtrusionRole role, double mm3_per_mm, float width, float height) : overhang_degree(overhang_degree), curve_degree(curve_degree), mm3_per_mm(mm3_per_mm), width(width), height(height), m_role(role) {}
+    //These properties are just for staggered perimeter production.
+    float z_offset; //z_offset to be multiplied to the layer height, default is 0
+    float extrusion_multiplier; //increase in extrusion, default is 1
+
+    ExtrusionPath() : mm3_per_mm(-1), width(-1), height(-1), m_role(erNone), m_no_extrusion(false), z_offset(0.0), extrusion_multiplier(1.0){}
+    ExtrusionPath(ExtrusionRole role) : mm3_per_mm(-1), width(-1), height(-1), m_role(role), m_no_extrusion(false), z_offset(0.0), extrusion_multiplier(1.0) {}
+    ExtrusionPath(ExtrusionRole role, double mm3_per_mm, float width, float height, bool no_extrusion = false) : mm3_per_mm(mm3_per_mm), width(width), height(height), m_role(role), m_no_extrusion(no_extrusion) , z_offset(0.0), extrusion_multiplier(1.0) {}
+    ExtrusionPath(double overhang_degree, int curve_degree, ExtrusionRole role, double mm3_per_mm, float width, float height) : overhang_degree(overhang_degree), curve_degree(curve_degree), mm3_per_mm(mm3_per_mm), width(width), height(height), m_role(role) , z_offset(0.0), extrusion_multiplier(1.0){}
 
     ExtrusionPath(const ExtrusionPath &rhs)
         : polyline(rhs.polyline)
@@ -175,6 +185,8 @@ public:
         , m_can_reverse(rhs.m_can_reverse)
         , m_role(rhs.m_role)
         , m_no_extrusion(rhs.m_no_extrusion)
+		, z_offset(rhs.z_offset)
+		, extrusion_multiplier(rhs.extrusion_multiplier)
     {}
     ExtrusionPath(ExtrusionPath &&rhs)
         : polyline(std::move(rhs.polyline))
@@ -186,6 +198,8 @@ public:
         , m_can_reverse(rhs.m_can_reverse)
         , m_role(rhs.m_role)
         , m_no_extrusion(rhs.m_no_extrusion)
+		, z_offset(rhs.z_offset)
+		, extrusion_multiplier(rhs.extrusion_multiplier)
     {}
     ExtrusionPath(const Polyline &polyline, const ExtrusionPath &rhs)
         : polyline(polyline)
@@ -197,6 +211,8 @@ public:
         , m_can_reverse(rhs.m_can_reverse)
         , m_role(rhs.m_role)
         , m_no_extrusion(rhs.m_no_extrusion)
+		, z_offset(rhs.z_offset)
+		, extrusion_multiplier(rhs.extrusion_multiplier)
     {}
     ExtrusionPath(Polyline &&polyline, const ExtrusionPath &rhs)
         : polyline(std::move(polyline))
@@ -208,6 +224,8 @@ public:
         , m_can_reverse(rhs.m_can_reverse)
         , m_role(rhs.m_role)
         , m_no_extrusion(rhs.m_no_extrusion)
+		, z_offset(rhs.z_offset)
+		, extrusion_multiplier(rhs.extrusion_multiplier)
     {}
 
     ExtrusionPath& operator=(const ExtrusionPath& rhs) {
@@ -220,6 +238,8 @@ public:
         this->overhang_degree = rhs.overhang_degree;
         this->curve_degree = rhs.curve_degree;
         this->polyline = rhs.polyline;
+        this->z_offset = rhs.z_offset;
+        this->extrusion_multiplier = rhs.extrusion_multiplier;
         return *this;
     }
     ExtrusionPath& operator=(ExtrusionPath&& rhs) {
@@ -232,6 +252,8 @@ public:
         this->overhang_degree = rhs.overhang_degree;
         this->curve_degree = rhs.curve_degree;
         this->polyline = std::move(rhs.polyline);
+        this->z_offset = rhs.z_offset;
+        this->extrusion_multiplier = rhs.extrusion_multiplier;
         return *this;
     }
 
