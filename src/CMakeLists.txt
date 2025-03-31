@@ -8,8 +8,6 @@ endif(POLICY CMP0175)
 add_subdirectory(build-utils)
 add_subdirectory(admesh)
 # add_subdirectory(avrdude)
-# boost/nowide
-add_subdirectory(boost)
 add_subdirectory(clipper)
 add_subdirectory(clipper2)
 add_subdirectory(miniz)
