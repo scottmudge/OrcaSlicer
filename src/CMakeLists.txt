@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(OrcaSlicer-native)
 
+if (POLICY CMP0175)
+    cmake_policy(SET CMP0175 OLD)
+endif(POLICY CMP0175)
+
 add_subdirectory(build-utils)
 add_subdirectory(admesh)
 # add_subdirectory(avrdude)
@@ -84,7 +88,7 @@ if (SLIC3R_GUI)
         list(FILTER wxWidgets_LIBRARIES EXCLUDE REGEX expat)
         list(APPEND wxWidgets_LIBRARIES ${EXPAT_LIBRARIES})
     endif ()
-    
+
     # This is an issue in the new wxWidgets cmake build, doesn't deal with librt
     find_library(LIBRT rt)
     if(LIBRT)

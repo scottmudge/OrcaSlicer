@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 
+if (POLICY CMP0175)
+    cmake_policy(SET CMP0175 OLD)
+endif(POLICY CMP0175)
+
 if (APPLE)
     # if CMAKE_OSX_DEPLOYMENT_TARGET is not set, set it to 11.3
     if (NOT CMAKE_OSX_DEPLOYMENT_TARGET)
@@ -309,7 +313,7 @@ if (NOT MSVC AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMP
         add_compile_options(-Wno-unknown-pragmas)
     endif()
 
-    # Bit of a hack for flatpak building: compress the debug info with zstd to save space in CI 
+    # Bit of a hack for flatpak building: compress the debug info with zstd to save space in CI
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 13.0)
         add_compile_options(-gz=zstd)
     endif()
@@ -447,7 +451,7 @@ endif()
 function(slic3r_remap_configs targets from_Cfg to_Cfg)
     if(MSVC)
         string(TOUPPER ${from_Cfg} from_CFG)
-    
+
         foreach(tgt ${targets})
             if(TARGET ${tgt})
                 set_target_properties(${tgt} PROPERTIES MAP_IMPORTED_CONFIG_${from_CFG} ${to_Cfg})
@@ -574,7 +578,7 @@ add_custom_target(gettext_make_pot
     COMMAND xgettext --keyword=L --keyword=_L --keyword=_u8L --keyword=L_CONTEXT:1,2c --keyword=_L_PLURAL:1,2 --add-comments=TRN --from-code=UTF-8 --no-location --debug --boost
         -f "${BBL_L18N_DIR}/list.txt"
         -o "${BBL_L18N_DIR}/OrcaSlicer.pot"
-	COMMAND hintsToPot ${SLIC3R_RESOURCES_DIR} ${BBL_L18N_DIR}	
+	COMMAND hintsToPot ${SLIC3R_RESOURCES_DIR} ${BBL_L18N_DIR}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMENT "Generate pot file from strings in the source tree"
 )
@@ -734,7 +738,7 @@ function(orcaslicer_copy_dlls target config postfix output_dlls)
 
         PARENT_SCOPE
     )
-    
+
 endfunction()
 
 
@@ -774,7 +778,7 @@ endif()
 if (WIN32)
     install(DIRECTORY "${SLIC3R_RESOURCES_DIR}/" DESTINATION "./resources")
     set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
-    include(InstallRequiredSystemLibraries) 
+    include(InstallRequiredSystemLibraries)
     install (PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ".")
 elseif (SLIC3R_FHS)
     # CMAKE_INSTALL_FULL_DATAROOTDIR: read-only architecture-independent data root (share)
