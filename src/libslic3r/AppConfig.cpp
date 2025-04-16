@@ -415,8 +415,8 @@ void AppConfig::set_defaults()
         set_bool("enable_step_mesh_setting", true);
     }
     if (get("linear_defletion", "angle_defletion").empty()) {
-        set("linear_defletion", "0.003");
-        set("angle_defletion", "0.5");
+        set("linear_defletion", "0.0022");
+        set("angle_defletion", "0.25");
     }
     if (get("is_split_compound").empty()) {
         set_bool("is_split_compound", false);
