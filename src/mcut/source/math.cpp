@@ -25,6 +25,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <tuple> // std::make_tuple std::get<>
+#include <cstdint>
 
 
     double square_root(const double& number)
@@ -717,7 +718,7 @@
         vec2 pp; /*projected p */
 #if 0
     int k = 0;
-    
+
     for (int j = 0; j < 3; j++)
     { // for each component
         if (j != polygon_plane_normal_largest_component)
@@ -831,7 +832,7 @@
     }
 
     char compute_segment_intersection(
-        const vec2& a, const vec2& b, const vec2& c, 
+        const vec2& a, const vec2& b, const vec2& c,
         const vec2& d, vec2& p, double& s, double& t)
     {
         // double s, t; /* The two parameters of the parametric eqns. */

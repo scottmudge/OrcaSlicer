@@ -590,7 +590,7 @@ Slic3r::GUI::PageShp Tab::add_options_page(const wxString& title, const std::str
     }
     // Initialize the page.
     //BBS: GUI refactor
-    PageShp page(new Page(m_page_view, title, icon_idx, this));
+    PageShp page = std::make_shared<Page>(m_page_view, title, icon_idx, this);
 //	page->SetBackgroundStyle(wxBG_STYLE_SYSTEM);
 #ifdef __WINDOWS__
 //	page->SetDoubleBuffered(true);
@@ -1558,7 +1558,7 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
                                                             m_config->opt_enum<SupportMaterialInterfacePattern>("support_interface_pattern") == SupportMaterialInterfacePattern::smipRectilinearInterlaced)) {
             wxString msg_text = _L("When using support material for the support interface, We recommend the following settings:\n"
                                    "0 top z distance, 0 interface spacing, interlaced rectilinear pattern and disable independent support layer height");
-            msg_text += "\n\n" + _L("Change these settings automatically? \n"
+            msg_text += "\n\n" + _L("Change these settings automatically?\n"
                                     "Yes - Change these settings automatically\n"
                                     "No  - Do not change these settings for me");
             MessageDialog      dialog(wxGetApp().plater(), msg_text, "Suggestion", wxICON_WARNING | wxYES | wxNO);
@@ -1613,7 +1613,7 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
             } else {
                 wxString msg_text = _(L("Layer height exceeds the limit in Printer Settings -> Extruder -> Layer height limits, "
                                         "this may cause printing quality issues."));
-                msg_text += "\n\n" + _(L("Adjust to the set range automatically? \n"));
+                msg_text += "\n\n" + _(L("Adjust to the set range automatically?\n"));
                 MessageDialog dialog(wxGetApp().plater(), msg_text, "", wxICON_WARNING | wxYES | wxNO);
                 dialog.SetButtonLabel(wxID_YES, _L("Adjust"));
                 dialog.SetButtonLabel(wxID_NO, _L("Ignore"));
@@ -1650,8 +1650,8 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         unsigned char activate = boost::any_cast<unsigned char>(value);
         if (activate == 1) {
             MessageDialog dialog(wxGetApp().plater(),
-                _L("Experimental feature: Retracting and cutting off the filament at a greater distance during filament changes to minimize flush."
-                    "Although it can notably reduce flush,  it may also elevate the risk of nozzle clogs or other printing complications."), "", wxICON_WARNING | wxOK);
+                _L("Experimental feature: Retracting and cutting off the filament at a greater distance during filament changes to minimize flush. "
+                    "Although it can notably reduce flush, it may also elevate the risk of nozzle clogs or other printing complications."), "", wxICON_WARNING | wxOK);
             dialog.ShowModal();
         }
     }
@@ -1660,8 +1660,9 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         unsigned char activate = boost::any_cast<unsigned char>(value);
         if (activate == 1) {
             MessageDialog dialog(wxGetApp().plater(), 
-            _L("Experimental feature: Retracting and cutting off the filament at a greater distance during filament changes to minimize flush."
-            "Although it can notably reduce flush, it may also elevate the risk of nozzle clogs or other printing complications.Please use with the latest printer firmware."), "", wxICON_WARNING | wxOK);
+                _L("Experimental feature: Retracting and cutting off the filament at a greater distance during filament changes to minimize flush. "
+                   "Although it can notably reduce flush, it may also elevate the risk of nozzle clogs or other printing complications. "
+                   "Please use with the latest printer firmware."), "", wxICON_WARNING | wxOK);
             dialog.ShowModal();
         }
     }
@@ -6263,8 +6264,12 @@ void Page::update_visibility(ConfigOptionMode mode, bool update_contolls_visibil
 #ifdef __WXMSW__
     if (!m_show) return;
     // BBS: fix field control position
-    wxTheApp->CallAfter([this]() {
-        for (auto group : m_optgroups) {
+    wxTheApp->CallAfter([wp=std::weak_ptr<Page>(shared_from_this())]() {
+        auto page = wp.lock();
+        if (!page)
+            return;
+
+        for (auto group : page->m_optgroups) {
             if (group->custom_ctrl) group->custom_ctrl->fixup_items_positions();
         }
     });
