@@ -10501,7 +10501,7 @@ msgstr ""
 "Використовуйте лише одну стінку на плоскій верхній поверхні, щоб надати "
 "більше місця для верхнього заповнення"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Поріг в одну стіну"
 
 #, no-c-format, no-boost-format

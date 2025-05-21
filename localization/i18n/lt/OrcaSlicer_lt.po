@@ -10491,7 +10491,7 @@ msgstr ""
 "Ant lygaus viršutinio paviršiaus naudokite tik vieną sienelę, kad būtų "
 "daugiau vietos viršutiniam užpildymo raštui"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Vienos sienos riba"
 
 #, no-c-format, no-boost-format

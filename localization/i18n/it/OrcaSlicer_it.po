@@ -10612,7 +10612,7 @@ msgstr ""
 "Utilizza solo una parete su superfici superiori piane, per dare più spazio "
 "al motivo di riempimento superiore"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Soglia singola parete"
 
 #, no-c-format, no-boost-format

@@ -10521,7 +10521,7 @@ msgstr ""
 "Use apenas uma parede em superfície superior, para dar mais espaço ao padrão "
 "de preenchimento superior"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Limiar de parede única"
 
 #, no-c-format, no-boost-format

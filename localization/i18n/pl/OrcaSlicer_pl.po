@@ -10494,7 +10494,7 @@ msgstr ""
 "Użyj tylko jednej ściany na płaskiej górnej powierzchni, aby zapewnić więcej "
 "miejsca dla wzoru górnego wypełnienia"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Próg jednej ściany"
 
 #, no-c-format, no-boost-format

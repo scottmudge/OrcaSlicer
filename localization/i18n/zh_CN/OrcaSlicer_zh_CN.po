@@ -9803,7 +9803,7 @@ msgid ""
 "pattern"
 msgstr "顶面只使用单层墙，从而更多的空间能够使用顶部填充图案"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "单层墙阈值"
 
 #, no-c-format, no-boost-format

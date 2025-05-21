@@ -10542,7 +10542,7 @@ msgstr ""
 "Utilitzeu només un perímetre a la superfície superior plana per donar més "
 "espai al patró de farciment superior"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Llindar d'un sol perímetre"
 
 #, no-c-format, no-boost-format

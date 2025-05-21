@@ -10681,7 +10681,7 @@ msgstr ""
 "N'utilisez qu'une seule paroi sur les surfaces supérieures planes, afin de "
 "donner plus d'espace au motif de remplissage supérieur"
 
-msgid "One wall threshold"
+msgid "Top-surface threshold"
 msgstr "Seuil de paroi unique"
 
 #, no-c-format, no-boost-format
