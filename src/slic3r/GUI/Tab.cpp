@@ -2106,6 +2106,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("min_bead_width");
         optgroup->append_single_option_line("min_feature_size");
         optgroup->append_single_option_line("min_length_factor");
+        optgroup->append_single_option_line("disable_min_length_top_bottom");
 
         optgroup = page->new_optgroup(L("Walls and surfaces"), L"param_wall_surface");
         optgroup->append_single_option_line("wall_sequence");
@@ -2153,6 +2154,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("wall_loops");
         optgroup->append_single_option_line("alternate_extra_wall");
         optgroup->append_single_option_line("detect_thin_wall");
+        optgroup->append_single_option_line("staggered_perimeters");
 
         optgroup = page->new_optgroup(L("Top/bottom shells"), L"param_shell");
         optgroup->append_single_option_line("top_shell_layers");
@@ -2182,12 +2184,17 @@ void TabPrint::build()
         optgroup->append_single_option_line("bridge_angle");
         optgroup->append_single_option_line("internal_bridge_angle"); // ORCA: Internal bridge angle override
         optgroup->append_single_option_line("minimum_sparse_infill_area");
+        optgroup->append_single_option_line("min_fill_path_length");
         optgroup->append_single_option_line("infill_combination");
         optgroup->append_single_option_line("infill_combination_max_layer_height");
         optgroup->append_single_option_line("detect_narrow_internal_solid_infill");
         optgroup->append_single_option_line("ensure_vertical_shell_thickness");
 
     page = add_options_page(L("Speed"), "custom-gcode_speed"); // ORCA: icon only visible on placeholders
+        optgroup = page->new_optgroup(L("Global speed"), L"global_speed_opts", 15);
+        optgroup->append_single_option_line("global_speed_factor");
+        optgroup->append_single_option_line("global_speed_factor_supports");
+        optgroup->append_single_option_line("global_speed_factor_apply_to_travel");
         optgroup = page->new_optgroup(L("Initial layer speed"), L"param_speed_first", 15);
         optgroup->append_single_option_line("initial_layer_speed");
         optgroup->append_single_option_line("initial_layer_infill_speed");
