@@ -5,8 +5,8 @@ if (POLICY CMP0175)
 endif(POLICY CMP0175)
 
 # Verify that your CMake version is exactly 3.31.x series or lower on windows
-if(${CMAKE_VERSION} VERSION_LESS "3.13" OR ${CMAKE_VERSION} VERSION_GREATER_EQUAL "4.0")
-    message(FATAL_ERROR "Only CMake versions between 3.13.x and 3.31.x is supported. Detected version: ${CMAKE_VERSION}")
+if ( ((MSVC) OR (WIN32)) AND (${CMAKE_VERSION} VERSION_GREATER_EQUAL "4.0") )
+    message(FATAL_ERROR "Only cmake versions between 3.13.x and 3.31.x is supported on windows. Detected version: ${CMAKE_VERSION}")
 endif()
 
 if (WIN32)
@@ -48,7 +48,7 @@ You can do this in Environment Variables settings.
         endif()
     endif()
 endif ()
-    
+
 if (APPLE)
     # if CMAKE_OSX_DEPLOYMENT_TARGET is not set, set it to 11.3
     if (NOT CMAKE_OSX_DEPLOYMENT_TARGET)
