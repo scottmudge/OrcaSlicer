@@ -255,7 +255,7 @@ std::unique_ptr<LocToLineGrid>                                               cre
 void fixSelfIntersections(const coord_t epsilon, Polygons &thiss)
 {
     if (epsilon < 1) {
-        ClipperLib::SimplifyPolygons(ClipperUtils::PolygonsProvider(thiss));
+        ClipperLib::SimplifyPolygons(ClipperUtils::PolygonsProvider(thiss), ClipperLib::pftEvenOdd);
         return;
     }
 
@@ -296,7 +296,7 @@ void fixSelfIntersections(const coord_t epsilon, Polygons &thiss)
         }
     }
 
-    ClipperLib::SimplifyPolygons(ClipperUtils::PolygonsProvider(thiss));
+    ClipperLib::SimplifyPolygons(ClipperUtils::PolygonsProvider(thiss), ClipperLib::pftEvenOdd);
 }
 
 /*!

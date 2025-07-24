@@ -28,32 +28,34 @@ Optimize your prints with ultra-fast slicing, intelligent support generation, an
 
 - **[Advanced Calibration Tools](https://github.com/SoftFever/OrcaSlicer/wiki/Calibration)**  
   Comprehensive suite: temperature towers, flow rate, retraction & more for optimal performance.
-- **[Precise Wall](https://github.com/SoftFever/OrcaSlicer/wiki/Precise-wall) and [Seam Control](https://github.com/SoftFever/OrcaSlicer/wiki/quality_settings_seam)**  
+- **[Precise Wall](https://github.com/SoftFever/OrcaSlicer/wiki/quality_settings_precision#precise-wall) and [Seam Control](https://github.com/SoftFever/OrcaSlicer/wiki/quality_settings_seam)**  
   Adjust outer wall spacing and apply scarf seams to enhance print accuracy.
-- **Sandwich Mode and [SuperSlicer Polyholes](https://github.com/supermerill/SuperSlicer/wiki/Polyholes) Support**  
+- **[Sandwich Mode](https://github.com/SoftFever/OrcaSlicer/wiki/quality_settings_wall_and_surfaces#innerouterinner) and [Polyholes](https://github.com/SoftFever/OrcaSlicer/wiki/quality_settings_precision#polyholes) Support**  
   Use varied infill patterns and accurate hole shapes for improved clarity.
-- **Overhang and Support Optimization**  
+- **[Overhang](https://github.com/SoftFever/OrcaSlicer/wiki/speed_settings_overhang_speed) and [Support Optimization](https://github.com/SoftFever/OrcaSlicer/wiki#support-settings)**  
   Modify geometry for printable overhangs with precise support placement.
-- **Granular Controls and Customization**  
+- **[Granular Controls](https://github.com/SoftFever/OrcaSlicer/wiki#process-settings) and Customization**  
   Fine-tune print speed, layer height, pressure, and temperature with precision.
 - **Network Printer Support**  
   Seamless integration with Klipper, PrusaLink, and OctoPrint for remote control.
-- **Mouse Ear Brims & Adaptive Bed Mesh**  
+- **[Mouse Ear Brims](https://github.com/SoftFever/OrcaSlicer/wiki/others_settings_brim) & Adaptive Bed Mesh**  
   Automatic brims and adaptive mesh calibration ensure consistent adhesion.
 - **User-Friendly Interface**  
   Intuitive drag-and-drop design with pre-made profiles for popular printers.
-- **Open-Source & Community Driven**  
+- **[Open-Source](https://github.com/SoftFever/OrcaSlicer) & [Community Driven](https://discord.gg/P4VE9UY9gJ)**  
   Regular updates fueled by continuous community contributions.
 - **Wide Printer Compatibility**  
   Supports a broad range of printers: Bambu Lab, Prusa, Creality, Voron, and more.
-- Additional features can be found in the [change notes](https://github.com/SoftFever/OrcaSlicer/releases/)
+- Additional features can be found in the [change notes](https://github.com/SoftFever/OrcaSlicer/releases/).
 
 # Wiki
+
 The wiki below aims to provide a detailed explanation of the slicer settings, including how to maximize their use and how to calibrate and set up your printer.
 
 Please note that the wiki is a work in progress. We appreciate your patience as we continue to develop and improve it!
 
-**[Access the wiki here](https://github.com/SoftFever/OrcaSlicer/wiki)**
+- **[Access the wiki here](https://github.com/SoftFever/OrcaSlicer/wiki)**
+- **[Contribute to the wiki](https://github.com/SoftFever/OrcaSlicer/wiki/How-to-wiki)**
 
 # Download
 
@@ -106,9 +108,9 @@ winget install --id=SoftFever.OrcaSlicer --e
       ```
     - Option 3:
         - Step 1: open the app, a warning window will pop up  
-            ![image](./SoftFever_doc/mac_cant_open.png)
+            ![mac_cant_open](./SoftFever_doc/mac_cant_open.png)
         - Step 2: in `System Settings` -> `Privacy & Security`, click `Open Anyway`:
-            ![image](./SoftFever_doc/mac_security_setting.png)
+            ![mac_security_setting](./SoftFever_doc/mac_security_setting.png)
     </details>
 
 ## Linux (Ubuntu):
@@ -181,4 +183,3 @@ The GNU Affero General Public License, version 3 ensures that if you use any par
 Orca Slicer includes a pressure advance calibration pattern test adapted from Andrew Ellis' generator, which is licensed under GNU General Public License, version 3. Ellis' generator is itself adapted from a generator developed by Sineos for Marlin, which is licensed under GNU General Public License, version 3.
 
 The Bambu networking plugin is based on non-free libraries from BambuLab. It is optional to the Orca Slicer and provides extended functionalities for Bambulab printer users.
-
