@@ -840,6 +840,7 @@ static std::vector<std::string> s_Preset_print_options {
      "small_area_infill_flow_compensation", "small_area_infill_flow_compensation_model",
      "seam_slope_type", "seam_slope_conditional", "scarf_angle_threshold", "scarf_joint_speed", "scarf_joint_flow_ratio", "seam_slope_start_height", "seam_slope_entire_loop", "seam_slope_min_length", "seam_slope_steps", "seam_slope_inner_walls", "scarf_overhang_threshold",
      "interlocking_beam", "interlocking_orientation", "interlocking_beam_layer_count", "interlocking_depth", "interlocking_boundary_avoidance", "interlocking_beam_width","calib_flowrate_topinfill_special_order",
+     "min_fill_path_length", "disable_min_length_top_bottom", "global_speed_factor", "global_speed_factor_supports", "global_speed_factor_apply_to_travel",
 };
 
 static std::vector<std::string> s_Preset_filament_options {

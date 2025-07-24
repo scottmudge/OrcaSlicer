@@ -102,6 +102,12 @@ inline bool is_bridge(ExtrusionRole role) {
         || role == erOverhangPerimeter;
 }
 
+inline bool is_support(ExtrusionRole role) {
+    return role == erSupportMaterial
+        || role == erSupportMaterialInterface
+        || role == erSupportTransition;
+}
+
 class ExtrusionEntity
 {
 public:

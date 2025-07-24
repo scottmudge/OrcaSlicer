@@ -20,7 +20,7 @@ if (MSVC)
     add_custom_target(dep_GMP SOURCES ${_output})
 
 else ()
-    set(_gmp_ccflags "-O2 -DNDEBUG -fPIC -DPIC -Wall -Wmissing-prototypes -Wpointer-arith -pedantic -fomit-frame-pointer -fno-common")
+    set(_gmp_ccflags "-O2 -DNDEBUG -fPIC -std=c17 -DPIC -Wall -Wmissing-prototypes -Wpointer-arith -pedantic -fomit-frame-pointer -fno-common")
     set(_gmp_build_tgt "${CMAKE_SYSTEM_PROCESSOR}")
 
     if (APPLE)

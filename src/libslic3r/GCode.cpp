@@ -399,7 +399,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
                 if (gcodegen.enable_cooling_markers() && !is_last)
                     cooling_mark = /*gcodegen.config().role_based_wipe_speed ? ";_EXTERNAL_PERIMETER" : */";_WIPE";
 
-                gcode += gcodegen.writer().set_speed(_wipe_speed * 60, "", cooling_mark);
+                gcode += gcodegen.writer().set_speed(_wipe_speed * 60, "", cooling_mark, true);
                 for (const Line& line : wipe_path.lines()) {
                     double segment_length = line.length();
                     double dE = length * (segment_length / wipe_dist);
@@ -5188,9 +5188,20 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
 {
     std::string gcode;
 
+    if (path.role() == erSolidInfill && m_config.min_fill_path_length.value > 0) {
+        if (unscale_(path.length()) < m_config.min_fill_path_length.value) {
+            return gcode;
+        }
+    }
+
     if (is_bridge(path.role()))
         description += " (bridge)";
 
+    double speed_factor_override = -1.0;
+    if (is_support(path.role())) {
+        speed_factor_override = double(m_config.global_speed_factor_supports.value) * 0.01;
+    }
+    
     const ExtrusionPathSloped* sloped = dynamic_cast<const ExtrusionPathSloped*>(&path);
 
     const auto get_sloped_z = [&sloped, this](double z_ratio) {
@@ -5723,7 +5734,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             // ORCA: End of adaptive PA code segment
         }
         
-        gcode += m_writer.set_speed(F, "", comment);
+        gcode += m_writer.set_speed(F, "", comment, speed_factor_override);
         {
             if (m_enable_cooling_markers) {
                 if (enable_overhang_bridge_fan) {
@@ -5851,7 +5862,7 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             Polyline l(p);
             total_length = l.length() * SCALING_FACTOR;
         }
-        gcode += m_writer.set_speed(last_set_speed, "", comment);
+        gcode += m_writer.set_speed(last_set_speed, "", comment, speed_factor_override);
         Vec2d prev = this->point_to_gcode_quantized(new_points[0].p);
         bool pre_fan_enabled = false;
         bool cur_fan_enabled = false;
@@ -5933,10 +5944,10 @@ std::string GCode::_extrude(const ExtrusionPath &path, std::string description, 
             // Ignore small speed variations - emit speed change if the delta between current and new is greater than 60mm/min / 1mm/sec
             // Reset speed to F if delta to F is less than 1mm/sec
             if ((std::abs(last_set_speed - new_speed) > 60)) {
-                gcode += m_writer.set_speed(new_speed, "", comment);
+                gcode += m_writer.set_speed(new_speed, "", comment, speed_factor_override);
                 last_set_speed = new_speed;
             } else if ((std::abs(F - new_speed) <= 60)) {
-                gcode += m_writer.set_speed(F, "", comment);
+                gcode += m_writer.set_speed(F, "", comment, speed_factor_override);
                 last_set_speed = F;
             }
             auto dE = e_per_mm * line_length;

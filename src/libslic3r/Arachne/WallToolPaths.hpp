@@ -26,6 +26,7 @@ public:
     float   min_bead_width;
     float   min_feature_size;
     float   min_length_factor;
+    bool    disable_min_length_top_bottom;
     float   wall_transition_length;
     float   wall_transition_angle;
     float   wall_transition_filter_deviation;

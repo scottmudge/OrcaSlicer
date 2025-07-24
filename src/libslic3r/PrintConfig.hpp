@@ -909,6 +909,8 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloat,              tree_support_branch_angle_organic))
     ((ConfigOptionEnum<GapFillTarget>,gap_fill_target))
     ((ConfigOptionFloat,              min_length_factor))
+    ((ConfigOptionBool,               disable_min_length_top_bottom))
+    ((ConfigOptionFloat,              min_fill_path_length))
 
     // Move all acceleration and jerk settings to object
     ((ConfigOptionFloat,              default_acceleration))
@@ -1252,6 +1254,11 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionStrings,              small_area_infill_flow_compensation_model))
 
     ((ConfigOptionBool,                has_scarf_joint_seam))
+        
+    // Mudge: Global speed factor
+    ((ConfigOptionPercent,             global_speed_factor))
+    ((ConfigOptionPercent,             global_speed_factor_supports))
+    ((ConfigOptionBool,                global_speed_factor_apply_to_travel))
 )
 
 // This object is mapped to Perl as Slic3r::Config::Print.

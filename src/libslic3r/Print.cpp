@@ -206,7 +206,11 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
         "long_retractions_when_cut",
         "retraction_distances_when_cut",
         "filament_long_retractions_when_cut",
-        "filament_retraction_distances_when_cut"
+        "filament_retraction_distances_when_cut",
+        // Mudge
+        "global_speed_factor",
+        "global_speed_factor_supports",
+        "global_speed_factor_apply_to_travel"
     };
 
     static std::unordered_set<std::string> steps_ignore;
