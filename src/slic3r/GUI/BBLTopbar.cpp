@@ -452,12 +452,12 @@ void BBLTopbar::SetTitle(wxString title)
 
 void BBLTopbar::SetMaximizedSize()
 {
-    maximize_btn->SetBitmap(maximize_bitmap);
+    // maximize_btn->SetBitmap(maximize_bitmap);
 }
 
 void BBLTopbar::SetWindowSize()
 {
-    maximize_btn->SetBitmap(window_bitmap);
+    // maximize_btn->SetBitmap(window_bitmap);
 }
 
 void BBLTopbar::UpdateToolbarWidth(int width)
@@ -506,21 +506,21 @@ void BBLTopbar::Rescale() {
     item->SetBitmap(create_scaled_bitmap("topbar_store", this, TOPBAR_ICON_SIZE));
     */
 
-    item = this->FindTool(wxID_ICONIZE_FRAME);
-    item->SetBitmap(create_scaled_bitmap("topbar_min", this, TOPBAR_ICON_SIZE));
+    // item = this->FindTool(wxID_ICONIZE_FRAME);
+    // item->SetBitmap(create_scaled_bitmap("topbar_min", this, TOPBAR_ICON_SIZE));
 
-    item = this->FindTool(wxID_MAXIMIZE_FRAME);
-    maximize_bitmap = create_scaled_bitmap("topbar_max", this, TOPBAR_ICON_SIZE);
-    window_bitmap   = create_scaled_bitmap("topbar_win", this, TOPBAR_ICON_SIZE);
-    if (m_frame->IsMaximized()) {
-        item->SetBitmap(window_bitmap);
-    }
-    else {
-        item->SetBitmap(maximize_bitmap);
-    }
+    // item = this->FindTool(wxID_MAXIMIZE_FRAME);
+    // maximize_bitmap = create_scaled_bitmap("topbar_max", this, TOPBAR_ICON_SIZE);
+    // window_bitmap   = create_scaled_bitmap("topbar_win", this, TOPBAR_ICON_SIZE);
+    // if (m_frame->IsMaximized()) {
+    //     item->SetBitmap(window_bitmap);
+    // }
+    // else {
+    //     item->SetBitmap(maximize_bitmap);
+    // }
 
-    item = this->FindTool(wxID_CLOSE_FRAME);
-    item->SetBitmap(create_scaled_bitmap("topbar_close", this, TOPBAR_ICON_SIZE));
+    // item = this->FindTool(wxID_CLOSE_FRAME);
+    // item->SetBitmap(create_scaled_bitmap("topbar_close", this, TOPBAR_ICON_SIZE));
 
     Realize();
 }
