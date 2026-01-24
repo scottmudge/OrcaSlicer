@@ -36,8 +36,6 @@ typedef int (*func_stop_subscribe)(void *agent, std::string module);
 typedef int (*func_add_subscribe)(void *agent, std::vector<std::string> dev_list);
 typedef int (*func_del_subscribe)(void *agent, std::vector<std::string> dev_list);
 typedef void (*func_enable_multi_machine)(void *agent, bool enable);
-typedef int (*func_start_device_subscribe)(void* agent);
-typedef int (*func_stop_device_subscribe)(void* agent);
 typedef int (*func_send_message)(void *agent, std::string dev_id, std::string json_str, int qos, int flag);
 typedef int (*func_connect_printer)(void *agent, std::string dev_id, std::string dev_ip, std::string username, std::string password, bool use_ssl);
 typedef int (*func_disconnect_printer)(void *agent);
@@ -112,15 +110,20 @@ typedef int (*func_get_model_mall_rating_result)(void *agent, int job_id, std::s
 typedef int (*func_get_mw_user_preference)(void *agent, std::function<void(std::string)> callback);
 typedef int (*func_get_mw_user_4ulist)(void *agent, int seed, int limit, std::function<void(std::string)> callback);
 
-
 //the NetworkAgent class
 class NetworkAgent
 {
 
 public:
     static std::string get_libpath_in_current_directory(std::string library_name);
-    static int initialize_network_module(bool using_backup = false);
+    static std::string get_versioned_library_path(const std::string& version);
+    static bool versioned_library_exists(const std::string& version);
+    static bool legacy_library_exists();
+    static void remove_legacy_library();
+    static std::vector<std::string> scan_plugin_versions();
+    static int initialize_network_module(bool using_backup = false, const std::string& version = "");
     static int unload_network_module();
+    static bool is_network_module_loaded();
 #if defined(_MSC_VER) || defined(_WIN32)
     static HMODULE get_bambu_source_entry();
 #else
@@ -129,6 +132,10 @@ public:
     static std::string get_version();
     static void* get_network_function(const char* name);
     static bool use_legacy_network;
+
+    static NetworkLibraryLoadError get_load_error();
+    static void clear_load_error();
+    static void set_load_error(const std::string& message, const std::string& technical_details, const std::string& attempted_path);
     NetworkAgent(std::string log_dir);
     ~NetworkAgent();
 
@@ -157,8 +164,6 @@ public:
     int add_subscribe(std::vector<std::string> dev_list);
     int del_subscribe(std::vector<std::string> dev_list);
     void enable_multi_machine(bool enable);
-    int start_device_subscribe();
-    int stop_device_subscribe();
     int send_message(std::string dev_id, std::string json_str, int qos, int flag);
     int connect_printer(std::string dev_id, std::string dev_ip, std::string username, std::string password, bool use_ssl);
     int disconnect_printer();
@@ -237,6 +242,8 @@ private:
     bool enable_track = false;
     void*                   network_agent { nullptr };
 
+    static NetworkLibraryLoadError s_load_error;
+
     static func_check_debug_consistent         check_debug_consistent_ptr;
     static func_get_version                    get_version_ptr;
     static func_create_agent                   create_agent_ptr;
@@ -266,8 +273,6 @@ private:
     static func_add_subscribe                  add_subscribe_ptr;
     static func_del_subscribe                  del_subscribe_ptr;
     static func_enable_multi_machine           enable_multi_machine_ptr;
-    static func_start_device_subscribe         start_device_subscribe_ptr;
-    static func_stop_device_subscribe          stop_device_subscribe_ptr;
     static func_send_message                   send_message_ptr;
     static func_connect_printer                connect_printer_ptr;
     static func_disconnect_printer             disconnect_printer_ptr;
